@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lantern — AI that lives on your phone</title>
+<meta name="description" content="Lantern runs open AI models directly on your phone, iPad and laptop. No internet, no account, nothing leaves your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F6F5F1; --bg-alt:#EEECE6; --surface:#FFFFFF; --surface-2:#F3F1EC;
+  --line:#DEDBD3; --line-strong:#C7C3B9;
+  --text:#17191C; --muted:#4A4F57; --faint:#5E636B;
+  --accent:#F2A93B; --on-accent:#17191C; --accent-text:#9A5A00;
+  --bar-track:#E2DFD8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#111315; --bg-alt:#15171A; --surface:#181A1E; --surface-2:#1B1D21;
+    --line:#262A2F; --line-strong:#3A3F46;
+    --text:#F2F0EA; --muted:#B4B9C0; --faint:#9EA4AC;
+    --accent:#F2A93B; --on-accent:#111315; --accent-text:#F2A93B;
+    --bar-track:#2A2E34;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#111315; --bg-alt:#15171A; --surface:#181A1E; --surface-2:#1B1D21;
+  --line:#262A2F; --line-strong:#3A3F46;
+  --text:#F2F0EA; --muted:#B4B9C0; --faint:#9EA4AC;
+  --accent:#F2A93B; --on-accent:#111315; --accent-text:#F2A93B;
+  --bar-track:#2A2E34;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+img,svg{max-width:100%}
+a{color:var(--accent-text)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+h1,h2,h3{font-family:"Space Grotesk",Inter,system-ui,sans-serif;margin:0}
+p{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+section{border-top:1px solid var(--line)}
+section.alt{background:var(--bg-alt)}
+.sec{padding:96px 0;display:flex;flex-direction:column;gap:48px}
+.sec-head{display:flex;flex-direction:column;gap:14px;max-width:700px}
+h2{font-size:clamp(32px,4.5vw,44px);line-height:1.1;letter-spacing:-.02em}
+.lead{font-size:18px;line-height:1.6;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:20px}
+.muted{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:14px;font-weight:600;font-size:16px;text-decoration:none}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-primary:hover{filter:brightness(1.06);color:var(--on-accent)}
+.btn-ghost{border:1px solid var(--line-strong);color:var(--text);font-weight:500}
+.btn-ghost:hover{border-color:var(--text);color:var(--text)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+.pill-accent{background:var(--accent);color:var(--on-accent)}
+.pill-outline{border:1px solid var(--line-strong);color:var(--text);padding:3px 10px}
+
+/* header */
+header .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;padding-bottom:24px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo span{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em}
+nav{display:flex;flex-wrap:wrap;align-items:center;gap:24px;font-size:15px}
+nav a{color:var(--muted);text-decoration:none}
+nav a:hover{color:var(--text)}
+nav .btn{min-height:44px;padding:0 20px;border-radius:999px;font-size:15px}
+
+/* hero */
+.hero{display:flex;flex-wrap:wrap;align-items:center;gap:64px;padding:64px 0 96px}
+.hero-copy{flex:999 1 480px;min-width:0;display:flex;flex-direction:column;gap:28px}
+.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--line-strong);border-radius:999px;font-size:14px;color:var(--muted)}
+h1{font-weight:700;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:-.03em}
+.hero-copy .lead{font-size:19px;max-width:560px}
+.hero-art{flex:1 1 340px;display:flex;justify-content:center}
+.phone{width:320px;max-width:100%;height:640px;border-radius:44px;border:10px solid #24272C;background:#17191C;color:#F2F0EA;padding:22px 16px;display:flex;flex-direction:column;gap:14px}
+.phone-top{display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+.phone-top b{font-family:"Space Grotesk",Inter,sans-serif;font-weight:600;font-size:17px}
+.phone-sub{font-size:12px;color:#9EA4AC;padding:0 4px}
+.chat{flex:1;display:flex;flex-direction:column;gap:12px;justify-content:flex-end}
+.me{align-self:flex-end;max-width:78%;background:#2A2E34;padding:12px 14px;border-radius:18px 18px 4px 18px;font-size:14px;line-height:1.45;display:flex;align-items:center;gap:8px}
+.ai{align-self:flex-start;max-width:86%;background:#1F2226;border:1px solid #2E3238;padding:12px 14px;border-radius:18px 18px 18px 4px;font-size:14px;line-height:1.5;color:#DCDFE3}
+.composer{display:flex;align-items:center;gap:8px}
+.composer .field{flex:1;height:44px;border-radius:22px;background:#24272C;display:flex;align-items:center;padding:0 16px;font-size:14px;color:#9EA4AC}
+.composer .mic{width:44px;height:44px;border-radius:22px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#111315}
+
+/* cards */
+.card{flex:1 1 300px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:14px}
+.card h3{font-size:24px}
+.card p{font-size:16px;line-height:1.6;color:var(--muted)}
+.card svg{stroke:var(--accent-text)}
+
+/* steps */
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:20px}
+.steps li{flex:1 1 280px;display:flex;flex-direction:column;gap:12px}
+.steps .n{font-family:"Space Grotesk",Inter,sans-serif;font-size:56px;font-weight:700;color:var(--accent-text);line-height:1}
+.steps h3{font-family:Inter,system-ui,sans-serif;font-size:20px;font-weight:600}
+.steps p{font-size:16px;line-height:1.6;color:var(--muted)}
+
+.picker{background:var(--surface-2);border:1px solid var(--line);border-radius:24px;padding:40px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.picker-copy{flex:999 1 380px;display:flex;flex-direction:column;gap:12px}
+.picker-copy h3{font-size:28px}
+.toggle{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.toggle button{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:500 15px Inter,system-ui,sans-serif;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.specs{flex:1 1 320px;display:flex;flex-direction:column;gap:14px;background:var(--bg);border-radius:18px;padding:28px;margin:0}
+.specs div{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.specs dt{color:var(--faint)}
+.specs dd{margin:0;font-weight:600;text-align:right}
+
+/* devices diagram */
+.diagram{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px;padding:16px 0}
+.dev-phone{width:150px;height:220px;border:2px solid var(--accent);border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--surface);text-align:center;padding:0 12px}
+.dev-tv{width:340px;max-width:80vw;height:200px;border:2px solid var(--line-strong);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--surface)}
+.dev-stand{width:90px;height:12px;background:var(--line-strong);border-radius:0 0 6px 6px;margin:0 auto}
+.diagram b{font-size:17px}
+.diagram small{font-size:13px;color:var(--muted)}
+.link{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--faint);font-size:13px}
+.dev-card{flex:1 1 260px;border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px}
+.dev-card .t{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dev-card h3{font-family:Inter,system-ui,sans-serif;font-size:20px;font-weight:600}
+.dev-card p{font-size:15px;line-height:1.6;color:var(--muted)}
+
+/* cluster */
+.kicker{align-self:flex-start;font-size:14px;font-weight:600;color:var(--accent-text)}
+.cluster{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:20px}
+.host{flex:1 1 280px;max-width:340px;border:2px solid var(--accent);border-radius:22px;padding:28px;background:var(--surface);display:flex;flex-direction:column;gap:14px}
+.host .t{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.host b{font-size:18px}
+.host p{font-size:14px;line-height:1.6;color:var(--muted)}
+.code{font-family:"Space Grotesk",Inter,sans-serif;font-size:30px;font-weight:700;letter-spacing:.12em}
+.lenders{flex:999 1 520px;display:flex;flex-direction:column;gap:12px}
+.lender{border:1px solid var(--line);border-radius:18px;padding:18px 22px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.lender .t{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.bar{height:10px;border-radius:5px;background:var(--bar-track);overflow:hidden}
+.bar i{display:block;height:10px;background:var(--accent)}
+.points{display:flex;flex-wrap:wrap;gap:24px}
+.points div{flex:1 1 240px;display:flex;flex-direction:column;gap:10px}
+.points h3{font-family:Inter,system-ui,sans-serif;font-size:19px;font-weight:600}
+.points p{font-size:15px;line-height:1.6;color:var(--muted)}
+
+/* faq */
+.faq{max-width:820px}
+details{border:1px solid var(--line);border-radius:16px;padding:20px 24px;background:var(--surface)}
+summary{cursor:pointer;font-size:18px;font-weight:600}
+details p{margin-top:14px;font-size:16px;line-height:1.6;color:var(--muted)}
+.faq-list{display:flex;flex-direction:column;gap:12px}
+
+/* cta + footer */
+.cta{padding:112px 0;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center}
+.cta h2{font-size:clamp(36px,5vw,56px);line-height:1.05;max-width:760px}
+.cta .row{justify-content:center;gap:14px}
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-top:32px;padding-bottom:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:14px;color:var(--faint)}
+
+@media (max-width:600px){
+  .wrap{padding:0 20px}
+  .sec{padding:72px 0}
+  .picker{padding:24px}
+  .phone{height:560px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="wrap">
+<a class="logo" href="#top">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M12 3v2"/><rect x="6" y="5" width="12" height="14" rx="3"/><path d="M12 10c1.5 1.4 1.5 3.2 0 4.5c-1.5-1.3-1.5-3.1 0-4.5z"/><path d="M8 21h8"/></svg>
+<span>Lantern</span>
+</a>
+<nav aria-label="Main">
+<a href="#features">Features</a>
+<a href="#how">How it works</a>
+<a href="#devices">Devices</a>
+<a href="#cluster">Cluster</a>
+<a href="#faq">FAQ</a>
+<a class="btn btn-primary" href="#download">Download</a>
+</nav>
+</div>
+</header>
+
+<main>
+<div class="wrap">
+<div class="hero" id="top">
+<div class="hero-copy">
+<span class="badge">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 3-2"/><path d="M19 12.9a10 10 0 0 0-4.5-2.6"/><path d="M12 20h.01"/></svg>
+Works with Wi‑Fi and mobile data switched off
+</span>
+<h1>AI that lives on your phone. Not in the cloud.</h1>
+<p class="lead">Lantern runs open AI models directly on your Android phone, iPad and laptop. Chat, talk out loud, or point your camera at something — no internet, no account, and nothing you say ever leaves your device.</p>
+<div class="row" style="gap:14px">
+<a class="btn btn-primary" href="#download">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5l5-5"/><path d="M5 21h14"/></svg>
+Download for Android
+</a>
+<a class="btn btn-ghost" href="#devices">iPad version — coming soon</a>
+</div>
+</div>
+<div class="hero-art">
+<div class="phone" role="img" aria-label="Lantern app on a phone, showing an offline chat about drone PID controllers">
+<div class="phone-top"><b>Lantern</b><span class="pill pill-accent">On‑device</span></div>
+<div class="phone-sub">Model: Small · runs on this phone</div>
+<div class="chat" aria-hidden="true">
+<div class="me">Explain how a PID controller works for my drone</div>
+<div class="ai">Think of it as three helpers. P reacts to how far off you are right now, I fixes small errors that build up over time, and D slows things down before you overshoot…</div>
+<div class="me"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>What part is this?</div>
+</div>
+<div class="composer" aria-hidden="true">
+<div class="field">Ask anything…</div>
+<div class="mic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<section id="features">
+<div class="wrap sec">
+<div class="sec-head">
+<h2>Three ways to use it. Zero servers.</h2>
+<p class="lead">Everything happens on the chip inside your phone, the same way your camera processes a photo.</p>
+</div>
+<div class="row">
+<div class="card">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg>
+<h3>Chat</h3>
+<p>Ask questions, get homework explained, brainstorm ideas or debug code. Replies stream in word by word, right on the device.</p>
+</div>
+<div class="card">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+<h3>Voice</h3>
+<p>Hold to talk. Lantern turns your speech into text on the phone, thinks, and reads the answer back out loud.</p>
+</div>
+<div class="card">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+<h3>Camera</h3>
+<p>Snap a photo of a circuit, a plant or a page of notes and ask about it. The image is analysed without being uploaded anywhere.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="how" class="alt">
+<div class="wrap sec">
+<h2>How it works</h2>
+<ol class="steps">
+<li><span class="n" aria-hidden="true">1</span><h3>Install the app</h3><p>Download Lantern on your Android phone. No sign‑up, no email, no account.</p></li>
+<li><span class="n" aria-hidden="true">2</span><h3>Download a brain, once</h3><p>Pick a model sized for your phone. It downloads one time over Wi‑Fi and is stored on the device.</p></li>
+<li><span class="n" aria-hidden="true">3</span><h3>Use it anywhere</h3><p>On a plane, in the hills, or with flight mode on. The AI keeps working because it never needed the internet.</p></li>
+</ol>
+<div class="picker">
+<div class="picker-copy">
+<h3>Choose your brain</h3>
+<p class="muted">Bigger models are smarter but need more memory. Lantern suggests one based on your phone, and you can switch any time.</p>
+<div class="toggle" role="group" aria-label="Model size">
+<button type="button" data-model="small" aria-pressed="true">Small — fast</button>
+<button type="button" data-model="medium" aria-pressed="false">Medium — smarter</button>
+</div>
+</div>
+<dl class="specs" aria-live="polite">
+<div><dt>Size</dt><dd id="s-params">~1–2B parameters</dd></div>
+<div><dt>Download</dt><dd id="s-download">~1–1.5 GB</dd></div>
+<div><dt>Best for phones with</dt><dd id="s-ram">4–6 GB RAM</dd></div>
+<div><dt>Feels like</dt><dd id="s-feel">Quick and handy</dd></div>
+</dl>
+</div>
+</div>
+</section>
+
+<section id="devices">
+<div class="wrap sec">
+<div class="sec-head">
+<h2>Phone, tablet, laptop and the big screen</h2>
+<p class="lead">Your phone or laptop does the thinking. In Big Screen mode, an LG webOS TV on the same Wi‑Fi shows the conversation full‑size, while your phone stays the microphone and keyboard. A laptop has more memory, so it can run the biggest, smartest models.</p>
+</div>
+<div class="diagram" role="img" aria-label="A phone or laptop runs the AI model and sends the chat over home Wi-Fi to an LG TV, with no internet involved">
+<div class="dev-phone" aria-hidden="true"><b>Phone or laptop</b><small>runs the AI model</small></div>
+<div class="link" aria-hidden="true">
+<span>home Wi‑Fi</span>
+<svg width="120" height="16" viewBox="0 0 120 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8h114"/><path d="M108 2l8 6l-8 6"/></svg>
+<span>no internet</span>
+</div>
+<div aria-hidden="true">
+<div class="dev-tv"><b>LG TV</b><small>shows the chat full‑screen</small></div>
+<div class="dev-stand"></div>
+</div>
+</div>
+<div class="row">
+<div class="dev-card"><div class="t"><h3>Android</h3><span class="pill pill-accent">Available first</span></div><p>Full app: chat, voice and camera. Runs on most recent phones; 8 GB RAM or more unlocks the larger model.</p></div>
+<div class="dev-card"><div class="t"><h3>iPad</h3><span class="pill pill-outline">Coming soon</span></div><p>Same app with a wider layout made for the tablet screen. Can also AirPlay straight to the TV.</p></div>
+<div class="dev-card"><div class="t"><h3>LG webOS TV</h3><span class="pill pill-outline">Display mode</span></div><p>A lightweight TV app that connects to your phone or laptop. The TV shows the answers; the other device does the AI work.</p></div>
+<div class="dev-card"><div class="t"><h3>Laptop</h3><span class="pill pill-outline">Coming soon</span></div><p>The most powerful option. More memory means bigger models, and it can act as the brain for the TV and your other devices at home.</p></div>
+</div>
+</div>
+</section>
+
+<section id="cluster" class="alt">
+<div class="wrap sec">
+<div class="sec-head">
+<span class="kicker">New: Cluster Server</span>
+<h2>Pool your devices into one bigger brain</h2>
+<p class="lead">Start a Cluster Server on one phone. Your other devices join its Wi‑Fi, each one lends some of its memory, and together they run a model too big for any single device. The model is split into layers, and every device runs its share.</p>
+</div>
+<div class="cluster">
+<div class="host">
+<div class="t"><b>Host phone</b><span class="pill pill-accent">Cluster Server</span></div>
+<p>Creates the network, splits the model and runs your chat.</p>
+<div><div class="muted" style="font-size:13px">Join code</div><div class="code">[CODE]</div></div>
+<div class="muted" style="font-size:13px">Example: 3 devices joined</div>
+</div>
+<div class="lenders">
+<div class="lender"><div class="t"><b>Laptop</b><span class="muted">lending 6 GB (example)</span></div><div class="bar" aria-hidden="true"><i style="width:60%"></i></div></div>
+<div class="lender"><div class="t"><b>iPad</b><span class="muted">lending 2 GB (example)</span></div><div class="bar" aria-hidden="true"><i style="width:30%"></i></div></div>
+<div class="lender"><div class="t"><b>Second phone</b><span class="muted">lending 2 GB (example)</span></div><div class="bar" aria-hidden="true"><i style="width:30%"></i></div></div>
+</div>
+</div>
+<div class="points">
+<div><h3>Each device chooses what it lends</h3><p>Joining is always opt‑in. The person holding each device sets how much memory to share and can leave the cluster any time.</p></div>
+<div><h3>Only devices you approve</h3><p>Devices join with a code shown on the host. Everything stays on your local network and never touches the internet.</p></div>
+<div><h3>No router needed</h3><p>Use your home Wi‑Fi, or let the host phone make its own hotspot so the cluster works on a trip too.</p></div>
+<div><h3>Bigger, not faster</h3><p>Passing work between devices over Wi‑Fi adds delay. The cluster lets you run smarter models; small models stay quickest on one device.</p></div>
+</div>
+</div>
+</section>
+
+<section id="faq">
+<div class="wrap sec faq">
+<h2>Questions</h2>
+<div class="faq-list">
+<details><summary>Does it really work without internet?</summary><p>Yes. You need internet only to install the app and download a model the first time. After that, every answer is generated on your phone.</p></details>
+<details><summary>Is anything I type or say sent somewhere?</summary><p>No. Your messages, voice and photos are processed on the device. There is no server to send them to.</p></details>
+<details><summary>Is it as smart as cloud AI?</summary><p>Not quite. Phone‑sized models are great for explanations, writing help and everyday questions, but giant cloud models still know more and reason better on very hard problems.</p></details>
+<details><summary>Can the TV join a cluster?</summary><p>The TV can display a cluster’s chat, but it can’t lend memory. Its small amount of RAM is already used by the TV system, and TV apps can’t run AI models.</p></details>
+<details><summary>Will it drain my battery?</summary><p>Generating answers works the processor hard, a bit like gaming, so long sessions use noticeable battery. Short questions barely make a dent.</p></details>
+</div>
+</div>
+</section>
+
+<section id="download">
+<div class="wrap cta">
+<h2>Your own private AI, in your pocket.</h2>
+<p class="lead" style="max-width:560px">Free during early access. Android first, then iPad and laptop.</p>
+<div class="row">
+<a class="btn btn-primary" href="#download">Download APK [YOUR LINK]</a>
+<a class="btn btn-ghost" href="#faq">Read the FAQ</a>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<span>Lantern by @VirenBuilds, bluelinestudio and viren-robot</span>
+<span>Powered by open models and llama.cpp</span>
+</div>
+</footer>
+
+<script>
+(function () {
+  var specs = {
+    small:  { params: '~1–2B parameters', download: '~1–1.5 GB', ram: '4–6 GB RAM', feel: 'Quick and handy' },
+    medium: { params: '~3–4B parameters', download: '~2–3 GB',   ram: '8 GB+ RAM',  feel: 'Thoughtful, a bit slower' }
+  };
+  var buttons = document.querySelectorAll('[data-model]');
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var s = specs[btn.dataset.model];
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+      document.getElementById('s-params').textContent = s.params;
+      document.getElementById('s-download').textContent = s.download;
+      document.getElementById('s-ram').textContent = s.ram;
+      document.getElementById('s-feel').textContent = s.feel;
+    });
+  });
+})();
+</script>
+</body>
+</html>
